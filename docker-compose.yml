@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  label-studio:
+    image: heartexlabs/label-studio:latest
+    container_name: label-studio
+    ports:
+      - "8080:8080"
+    environment:
+      - LABEL_STUDIO_HOST=0.0.0.0
+      - LABEL_STUDIO_PORT=8080
+    volumes:
+      - label-studio-data:/label-studio/data
+
+  images_bucket:
+    build:
+      context: ./images_bucket
+      dockerfile: Dockerfile
+    container_name: images_bucket
+    ports:
+      - "8081:8081" # Adjust this port if necessary
+    volumes:
+      - ./images_bucket:/app
+    working_dir: /app
+    command: python server.py
+
+volumes:
+  label-studio-data:
