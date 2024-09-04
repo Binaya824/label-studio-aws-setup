@@ -5,10 +5,10 @@ services:
     image: heartexlabs/label-studio:latest
     container_name: label-studio
     ports:
-      - "8080:8080"
+      - "5432:5432"
     environment:
       - LABEL_STUDIO_HOST=0.0.0.0
-      - LABEL_STUDIO_PORT=8080
+      - LABEL_STUDIO_PORT=5432
     volumes:
       - label-studio-data:/label-studio/data
 
@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile
     container_name: images_bucket
     ports:
-      - "8081:8081" # Adjust this port if necessary
+      - "1001:1001" # Adjust this port if necessary
     volumes:
       - ./images_bucket:/app
     working_dir: /app
