@@ -1,28 +1,38 @@
-version: '3.8'
+version: "3.8"
 
 services:
   label-studio:
     image: heartexlabs/label-studio:latest
     container_name: label-studio
-    ports:
-      - "5432:5432"
     environment:
       - LABEL_STUDIO_HOST=0.0.0.0
-      - LABEL_STUDIO_PORT=5432
+      - LABEL_STUDIO_PORT=8080
+      - CSRF_TRUSTED_ORIGINS=http://localhost:5432,http://192.168.31.171:5432
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,192.168.31.171
     volumes:
       - label-studio-data:/label-studio/data
+    expose:
+      - "8080" # Internal port
 
   images_bucket:
     build:
       context: ./images_bucket
       dockerfile: Dockerfile
     container_name: images_bucket
-    ports:
-      - "1001:1001" # Adjust this port if necessary
     volumes:
       - ./images_bucket:/app
     working_dir: /app
     command: python server.py
+    expose:
+      - "8081" # Internal port
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "5432:5432" # Public port for both Label Studio and images
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf # Mount custom Nginx config
 
 volumes:
   label-studio-data:
